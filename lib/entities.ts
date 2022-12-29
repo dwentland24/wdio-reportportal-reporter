@@ -42,6 +42,7 @@ export class EndTestItem {
   public issue?: Issue;
   public description?: string;
   public attributes: Attribute[] = []
+  public parameters?: TestParameter[]
 
   constructor(status: STATUS, issue?: Issue) {
     this.status = status;
@@ -71,4 +72,9 @@ export class StorageEntity {
     this.promise = promise;
     this.wdioEntity = wdioEntity;
   }
+}
+
+export type TestParameter = {
+  key: string;
+  value: string
 }

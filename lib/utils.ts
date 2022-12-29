@@ -2,7 +2,7 @@
 import logger from "@wdio/logger";
 import validator from "validator";
 import * as path from "path";
-import {StartTestItem} from "./entities";
+import {StartTestItem, TestParameter} from "./entities";
 import ReporterOptions from "./ReporterOptions";
 import {TestStats} from "@wdio/reporter";
 
@@ -73,14 +73,13 @@ export const limit = (val: any) => {
   }
 };
 
-export const addBrowserParam = (browser: string, testItem: StartTestItem) => {
-  if (browser) {
-    const param = {key: "browser", value: browser};
+export const addTestParams = (params: TestParameter[], testItem: StartTestItem) => {
+  if (params) {
     if (Array.isArray(testItem.parameters)) {
-      testItem.parameters.push(param);
+      testItem.parameters.push(...params);
       return;
     }
-    testItem.parameters = [param];
+    testItem.parameters = params;
   }
 };
 

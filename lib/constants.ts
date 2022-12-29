@@ -5,9 +5,10 @@ export enum EVENTS {
   RP_TEST_FILE = "rp:failedFile",
   RP_TEST_RETRY = "rp:testRetry",
   RP_TEST_ATTRIBUTES = "rp:testAttributes",
+  RP_TEST_PARAM = "rp:TestParams",
   RP_SUITE_ATTRIBUTES = "rp:SuiteAttributes",
   RP_SUITE_ADD_DESCRIPTION = "rp:SuiteDescription",
-  RP_ALL_SUITE_ADD_DESCRIPTION = "rp:AllSuiteDescription"
+  RP_ALL_SUITE_ADD_DESCRIPTION = "rp:AllSuiteDescription",
 }
 
 export enum STATUS {

@@ -1,7 +1,7 @@
 import {TYPE} from "../constants";
 import {StartTestItem} from "../entities";
 import {
-  addBrowserParam,
+  addTestParams,
   addCodeRef, addCodeRefCucumber,
   addDescription,
   addSauceLabAttributes, getRelativePath,
@@ -45,20 +45,20 @@ describe("utils#sendToReporter", () => {
 describe("#addBrowserParam", () => {
   test("should add browser name as parameter", () => {
     const testStartObj = new StartTestItem("foo", TYPE.TEST);
-    addBrowserParam("foo", testStartObj);
+    addTestParams([{key: 'browser', value: "foo"}], testStartObj);
     expect(testStartObj.parameters).toEqual([{key: "browser", value: "foo"}]);
   });
 
   test("should not clear other params", () => {
     const testStartObj = new StartTestItem("foo", TYPE.TEST);
     testStartObj.parameters = ["bar"];
-    addBrowserParam("foo", testStartObj);
+    addTestParams([{key: 'browser', value: "foo"}], testStartObj);
     expect(testStartObj.parameters).toEqual(["bar", {key: "browser", value: "foo"}]);
   });
 
   test("should not add if missing", () => {
     const testStartObj = new StartTestItem("foo", TYPE.TEST);
-    addBrowserParam(undefined, testStartObj);
+    addTestParams(undefined, testStartObj);
     expect(testStartObj.parameters).toBeUndefined();
   });
 });

@@ -30,6 +30,7 @@ describe("startSuite", () => {
       2,
       {
         description: undefined,
+        parameters: [],
         codeRef: "C:/work/home/spec.ts:fullTitle",
         hasStats: false,
         attributes: [],
@@ -58,6 +59,7 @@ describe("startSuite", () => {
       2,
       {
         description: undefined,
+        parameters: [],
         codeRef: "C:/work/home/spec.ts:fullTitle",
         attributes: [{key: "SLID", value: "bar"}, {key: "SLDC", value: "foo"}],
         name: "foo",

@@ -4,14 +4,14 @@ import {createHash} from "crypto";
 import * as path from "path";
 import * as ReportPortalClient from "reportportal-js-client";
 import {WDIO_TEST_STATUS, CUCUMBER_TYPE, EVENTS, LEVEL, STATUS, TYPE} from "./constants";
-import {EndTestItem, Issue, StartTestItem, StorageEntity} from "./entities";
+import {EndTestItem, Issue, StartTestItem, StorageEntity, TestParameter} from "./entities";
 import ReporterOptions, {Attribute} from "./ReporterOptions";
 import {Storage} from "./storage";
 import {
-  addBrowserParam,
   addCodeRef,
   addCodeRefCucumber,
   addSauceLabAttributes,
+  addTestParams,
   ansiRegex,
   getRelativePath,
   isEmpty,
@@ -61,6 +61,10 @@ class ReportPortalReporter extends Reporter {
     sendToReporter(EVENTS.RP_ALL_SUITE_ADD_DESCRIPTION, description)
   }
 
+  public static addTestParameter(parameter: TestParameter) {
+    sendToReporter(EVENTS.RP_TEST_PARAM, parameter)
+  }
+
 
   private static getValidatedAttribute(attribute: Attribute): Attribute {
     if (!attribute) {
@@ -107,9 +111,10 @@ class ReportPortalReporter extends Reporter {
   private featureStatus: STATUS;
   private featureName: string;
   private currentTestAttributes: Attribute[] = [];
-  private currentSuiteAttributes: Attribute[] = []
-  private currentSuiteDescription: string[] = []
-  private suitesDescription: string[] = []
+  private currentSuiteAttributes: Attribute[] = [];
+  private currentSuiteDescription: string[] = [];
+  private suitesDescription: string[] = [];
+  private testParams: TestParameter[] = [];
 
   constructor(options: any) {
     super(options);
@@ -223,7 +228,14 @@ class ReportPortalReporter extends Reporter {
     if (this.reporterOptions.setRetryTrue) {
       testStartObj.retry = true;
     }
-    addBrowserParam(this.sanitizedCapabilities, testStartObj);
+
+    if (this.sanitizedCapabilities) {
+      addTestParams([{key: 'browser', value: this.sanitizedCapabilities}], testStartObj);
+    }
+
+    if (this.testParams) {
+      addTestParams(this.testParams, testStartObj);
+    }
 
     const {tempId, promise} = this.client.startTestItem(
       testStartObj,
@@ -432,6 +444,10 @@ class ReportPortalReporter extends Reporter {
     promiseErrorHandler(promise);
   }
 
+  private addTestParam(param: TestParameter) {
+    this.testParams.push(param)
+  }
+
   private sendFile({level, name, content, type = "image/png", message = ""}) {
     const testItem = this.storage.getCurrentTest();
     if (!testItem) {
@@ -501,6 +517,7 @@ class ReportPortalReporter extends Reporter {
     process.on(EVENTS.RP_SUITE_ATTRIBUTES, this.addAttributeToSuite.bind(this));
     process.on(EVENTS.RP_SUITE_ADD_DESCRIPTION, this.addDescriptionToCurrentSuite.bind(this))
     process.on(EVENTS.RP_ALL_SUITE_ADD_DESCRIPTION, this.addDescriptionToAllSuites.bind(this))
+    process.on(EVENTS.RP_TEST_PARAM, this.addTestParam.bind(this))
   }
 
   private now() {
